@@ -1,7 +1,6 @@
-package cn.zealon.readingcloud.common.result;
+package com.yefeng.recycling.result;
 
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
 
@@ -9,16 +8,16 @@ import java.io.Serializable;
  * 操作结果集封装
  * @author zealon
  */
-@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-public class Result<T>  implements Serializable {
+//@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+public class Result  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private Integer code;
     private String msg;
-    private T data;
+    private Object data;
 
-    public Result(int code, String msg, T data) {
+    public Result(int code, String msg, Object data) {
         this.code = code;
         this.msg = msg;
         this.data = data;
@@ -68,7 +67,7 @@ public class Result<T>  implements Serializable {
      * @param obj data值
      * @return
      */
-    public Result buildData(T obj){
+    public Result buildData(Object obj){
         this.setData(obj);
         return this;
 
@@ -90,11 +89,11 @@ public class Result<T>  implements Serializable {
         this.msg = msg;
     }
 
-    public T getData() {
+    public Object getData() {
         return data;
     }
 
-    public void setData(T data) {
+    public void setData(Object data) {
         this.data = data;
     }
 }

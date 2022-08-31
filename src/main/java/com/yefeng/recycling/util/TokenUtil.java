@@ -21,7 +21,7 @@ public class TokenUtil {
     /**
      * 令牌头是否来自于请求头
      */
-    private static final boolean TOKEN_FROM_HEADER = false;
+    private static final boolean TOKEN_FROM_HEADER = true;
 
     private static final Log log= LogFactory.get();
 

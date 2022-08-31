@@ -3,10 +3,7 @@ package com.yefeng.recycling.JWT;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
-import com.auth0.jwt.exceptions.AlgorithmMismatchException;
-import com.auth0.jwt.exceptions.InvalidClaimException;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.exceptions.*;
 import com.yefeng.recycling.util.AccessAddressUtils;
 import com.yefeng.recycling.util.JwtUtil;
 import com.yefeng.recycling.util.TokenUtil;
@@ -83,17 +80,17 @@ public class JWTFilter extends AuthenticatingFilter {
                 //判断是否在黑名单是则移除(内置判断是否为黑名单)
 //                RedisUtils.removeBlackList(token);
                 //不在黑名单则尝试刷新token
-                String newToken = JwtUtil.refreshToken(token);
-                if (newToken == null || newToken.equals("") || !StringUtils.hasText(newToken)) {
+//                String newToken = JwtUtil.refreshToken(token);
+//                if (newToken == null || newToken.equals("") || !StringUtils.hasText(newToken)) {
                     response401(servletRequest, servletResponse, "token已过期");
                     return false;
-                }
+//                }
 //                RedisUtils.addBlackList(token);
                 //刷新成功则重新设置token
-                TokenUtil.setToken(servletResponse, newToken);
-                log.info("token已过期,自动刷新token" + newToken);
+//                TokenUtil.setToken(servletResponse, newToken);
+//                log.info("token已过期,自动刷新token" + newToken);
 //                return true;
-            } catch (Exception e) {
+            } catch (JWTDecodeException e) {
                 log.warn("ip:{} url:{} ,token:{}被篡改", ip, request.getRequestURI(), token);
                 response401(servletRequest, servletResponse, "token被篡改");
             }

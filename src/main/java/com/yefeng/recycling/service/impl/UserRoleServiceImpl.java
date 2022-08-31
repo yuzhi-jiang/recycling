@@ -1,14 +1,10 @@
 package com.yefeng.recycling.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.yefeng.recycling.entity.Role;
 import com.yefeng.recycling.entity.UserRole;
 import com.yefeng.recycling.mapper.UserRoleMapper;
 import com.yefeng.recycling.service.IUserRoleService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * <p>

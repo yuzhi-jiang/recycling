@@ -12,6 +12,11 @@ public class SystemPropertiesConfig {
     /**
      * 请求白名单
      */
-    @Value("${system.properties}")
+    @Value("${system.properties.whitelist}")
     private String whitelist;
+
+
+    @Value("${system.properties.imgSavePath}")
+    private String IMAGE_SAVE_PATH;
+
 }

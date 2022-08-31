@@ -5,6 +5,7 @@ import cn.hutool.log.LogFactory;
 import com.yefeng.recycling.result.Result;
 import com.yefeng.recycling.result.ResultUtil;
 import org.apache.shiro.authz.AuthorizationException;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -22,11 +23,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestControllerAdvice(basePackages = "com.hy.brush.lesson.admin.controller")
-
+//@RestControllerAdvice(basePackages = "com.hy.brush.lesson.admin.controller")
+@RestControllerAdvice
 public class MyExceptionHandler {
 
     private static final Log log= LogFactory.get();
+
+    @ResponseBody
+    @ExceptionHandler(Exception.class)
+    public Result Exception(Exception e){
+        log.error(e.getMessage());
+        Result result = new Result();
+        result.setCode(501);
+        result.setMsg("发生系统错误，请稍后再试试");
+        return result;
+    }
+
     @ResponseBody
     @ExceptionHandler({AuthorizationException.class})
     public Result handle401(Exception e) {
@@ -62,8 +74,18 @@ public class MyExceptionHandler {
     public Result HttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e){
         log.error(e.getMessage());
         Result result = new Result();
-        result.setCode(405);
+        result.setCode(406);
         result.setMsg("不支持"+e.getContentType()+"格式");
+        return result;
+    }
+
+    @ResponseBody
+    @ExceptionHandler(FileSizeLimitExceededException.class)
+    public Result FileSizeLimitExceededException(FileSizeLimitExceededException e){
+        log.error(e.getMessage());
+        Result result = new Result();
+        result.setCode(405);
+        result.setMsg("文件超过10MB");
         return result;
     }
 

@@ -12,9 +12,8 @@ import com.yefeng.recycling.util.TokenUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -40,10 +39,11 @@ public class TaskController {
     ITaskService iTaskService;
 
     @Operation(summary = "获取所有任务，需要管理员和超级管理员权限")
-    @RequiresRoles(value = {"ROLE_ADMIN", "ROLE_ROOT"}, logical = Logical.OR)
+//    @RequiresRoles(value = {"ROLE_ADMIN", "ROLE_ROOT"}, logical = Logical.OR)
     @GetMapping("/all")
     public Result getAllTask() {
         ArrayList<Task> tasks = iTaskService.getAllTask();
+        log.info(tasks.toString());
         return ResultUtil.success().buildData(tasks);
     }
 
@@ -60,17 +60,18 @@ public class TaskController {
     @Operation(summary = "根据任务id修改任务,必要要有task的update权限")
     @RequiresPermissions(value = {"task:update"})
     @PutMapping("/{taskId}")
-    public Result updateTaskBySalesmanId(HttpServletRequest request, @Parameter(description = "任务id") @PathVariable Integer taskId, @Parameter(description = "task表单") @RequestBody TaskBO taskBO) {
+    public Result updateTaskBySalesmanId(HttpServletRequest request, @Parameter(description = "任务id")
+    @PathVariable Integer taskId,
+                                         @Parameter(description = "task表单")
+                                         @RequestBody TaskBO taskBO) {
 
-
-        String token = TokenUtil.getToken(request);
-        String userId = JwtUtil.getUserIdByToken(token);
+        String userId = getUserIdByToken(request);
 
         if (userId != null) {
             taskBO.setSubscribeId(null);//预约id不可更改
             Boolean flag = iTaskService.updateTask(Integer.valueOf(userId), taskBO);
 
-            if (flag){
+            if (flag) {
                 return ResultUtil.success();
             }
         }
@@ -78,9 +79,57 @@ public class TaskController {
     }
 
 
+    @Operation(summary = "创建任务")
+    @RequiresPermissions("task:insert")
+    @PostMapping("")
+    public Result saveTask(@RequestBody TaskBO taskBO) {
+        int id = iTaskService.saveTask(taskBO);
+        if (id > 0) {
+            taskBO.setId(id);
+            return ResultUtil.success().buildMessage("创建成功").buildData(taskBO);
+        }
+
+        return ResultUtil.fail().buildMessage("创建失败");
+    }
 
 
+    @Operation(summary = "删除任务")
+    @RequiresPermissions("task:delete")
+    @DeleteMapping("/{taskId}")
+    public Result deleteTask(HttpServletRequest request, @PathVariable Integer taskId) {
+        String userId = getUserIdByToken(request);
+
+        if (!StringUtils.hasText(userId)) {
+            log.warn("没有获取到userId作为update_By");
+            return ResultUtil.fail().buildMessage("删除失败,请正确登录");
+        }
+        Boolean flag = iTaskService.deleteTask(Integer.valueOf(userId), taskId);
+        if (flag)
+            return ResultUtil.success().buildMessage("删除任务成功");
+        return ResultUtil.fail().buildMessage("删除失败,或查看参数是否有效");
+    }
+
+    @Operation(summary = "批量删除任务")
+    @RequiresPermissions("task:delete")
+    @DeleteMapping("/delete")
+    public Result deleteTask(HttpServletRequest request, int... taskId) {
+
+        String userId = getUserIdByToken(request);
+
+        if (!StringUtils.hasText(userId)) {
+            log.warn("没有获取到userId作为update_By");
+            return ResultUtil.fail().buildMessage("删除失败,请正确登录");
+        }
+        Boolean flag = iTaskService.deleteTasks(Integer.valueOf(userId), taskId);
+        if (flag)
+            return ResultUtil.success().buildMessage("删除任务成功");
+        return ResultUtil.fail().buildMessage("删除失败,请稍后再试,或查看参数是否有效");
+    }
 
 
+    private String getUserIdByToken(HttpServletRequest request) {
+        String token = TokenUtil.getToken(request);
 
+        return JwtUtil.getUserIdByToken(token);
+    }
 }

@@ -1,10 +1,15 @@
 package com.yefeng.recycling.service.impl;
 
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yefeng.recycling.BO.SubscribeBO;
 import com.yefeng.recycling.entity.Subscribe;
 import com.yefeng.recycling.mapper.SubscribeMapper;
 import com.yefeng.recycling.service.ISubscribeService;
+import com.yefeng.recycling.util.StatusConstant;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,6 +25,17 @@ import java.util.List;
  */
 @Service
 public class SubscribeServiceImpl extends ServiceImpl<SubscribeMapper, Subscribe> implements ISubscribeService {
+
+    private static final Log log= LogFactory.get();
+    @Override
+    public boolean saveSubscribe(SubscribeBO subscribeBO) {
+        log.info("subscribeBO:{}",subscribeBO);
+        Subscribe subscribe = new Subscribe();
+        subscribe.setStatus(StatusConstant.ACTIVE);
+        BeanUtils.copyProperties(subscribeBO,subscribe);
+        Integer integer = baseMapper.insertSubscribe(subscribe);
+        return integer>0;
+    }
 
     @Override
     public ArrayList<Subscribe> getAllSubscribe() {

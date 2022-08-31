@@ -1,5 +1,6 @@
 package com.yefeng.recycling.BO;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -7,6 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
+@ApiModel(value="TaskBO对象", description="组件")
 public class TaskBO implements Serializable {
     private static final long serialVersionUID = 1231L;
 
@@ -30,6 +32,6 @@ public class TaskBO implements Serializable {
     @ApiModelProperty("业务员id")
     private String salesmanId;
 
-    @ApiModelProperty("状态")
-    private Integer status;
+//    @ApiModelProperty("状态")
+//    private Integer status;
 }

@@ -1,4 +1,4 @@
-package cn.zealon.readingcloud.common.result;
+package com.yefeng.recycling.result;
 
 /**
  * 返回结果工具类

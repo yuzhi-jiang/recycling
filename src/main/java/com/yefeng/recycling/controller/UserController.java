@@ -12,6 +12,8 @@ import com.yefeng.recycling.service.UserDetailService;
 import com.yefeng.recycling.util.JwtUtil;
 import com.yefeng.recycling.util.TokenUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,7 @@ import java.util.Set;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author yefeng
@@ -38,13 +40,14 @@ public class UserController {
 
     @Operation(summary = "用户登录")
     @PostMapping("/login")
+    @Parameters({
+            @Parameter(name = "user", description = "用户名:userName,密码：password"),
+    })
     public Result login(@RequestBody RequestParams user) throws BindException {
         String userName = user.getStringValue("userName");
         String password = user.getStringValue("password");
-        return iUserService.login(userName,password);
+        return iUserService.login(userName, password);
     }
-
-
 
 
     @Resource
@@ -55,7 +58,7 @@ public class UserController {
 
     @Operation(summary = "获取用户信息")
     @GetMapping("/userInfo")
-    public Result getUserInfo(HttpServletRequest request){
+    public Result getUserInfo(HttpServletRequest request) {
         String token = TokenUtil.getToken(request);
         if (token == null) {
             return ResultUtil.fail().buildMessage("请先登录");
@@ -72,7 +75,7 @@ public class UserController {
         });
 
 
-        if (userDetail==null){
+        if (userDetail == null) {
             return ResultUtil.fail().buildMessage("无法获取用户信息，请稍后再试");
         }
         return ResultUtil.success(userDetail);

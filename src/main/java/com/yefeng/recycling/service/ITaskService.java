@@ -32,4 +32,8 @@ public interface ITaskService extends IService<Task> {
     Boolean runTask(Integer updateId, Integer taskId);
 
     Boolean deleteTask(Integer updateId, Integer taskId);
+
+    Boolean deleteTasks(Integer updateId, int... taskId);
+
+    Integer saveTask(TaskBO taskBO);
 }

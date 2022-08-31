@@ -1,7 +1,6 @@
 package com.yefeng.recycling.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yefeng.recycling.BO.SubscribeBO;
 import com.yefeng.recycling.entity.Subscribe;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
@@ -21,8 +20,8 @@ public interface SubscribeMapper extends BaseMapper<Subscribe> {
 
 
     @Insert("insert into subscribe(phone,address,address_point,scheduled_time,user_id,status)" +
-            " values(#{phone},#{address},#{addressPoint},#{scheduledTime},#{user_id},#{status})")
-    Integer insertSubscribe(SubscribeBO subscribeBO);
+            " values(#{phone},#{address},#{addressPoint},#{scheduledTime},#{userId},#{status})")
+    Integer insertSubscribe(Subscribe subscribe);
 
 
     @Update("update subscribe set subscribe.status=#{status} where id=#{id}")

@@ -3,6 +3,7 @@ package com.yefeng.recycling.JWT;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.yefeng.recycling.VO.RolePowerVO;
 import com.yefeng.recycling.VO.UserRoleVO;
 import com.yefeng.recycling.entity.Power;
@@ -47,7 +48,7 @@ public class JWTRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         AccountProfile accountProfile = (AccountProfile) principalCollection.getPrimaryPrincipal();
-
+        log.info("进入授权 accountProfile:{}",accountProfile);
         String userName = accountProfile.getUserName();
 
         UserRoleVO userDetail = userDetailService.getUserDetail(userName);
@@ -90,12 +91,14 @@ public class JWTRealm extends AuthorizingRealm {
      认证，不授权
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException, SignatureVerificationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException, SignatureVerificationException, TokenExpiredException {
         JWTToken jwtToken = (JWTToken) authenticationToken;
         String token = jwtToken.getPrincipal().toString();
 
 
-        boolean flag = JwtUtil.verifyToken(token);
+        log.info("进入验证流程 token:{}",token);
+
+        JwtUtil.verifyToken(token);
 
         if (token == null || token.isBlank()) {
             throw new AuthenticationException("token为空!");
