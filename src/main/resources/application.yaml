@@ -1,0 +1,41 @@
+spring:
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://yefengzhijia.xyz:3306/ssr
+    username: root
+    password: youpassword
+  aop:
+    proxy-target-class: true #开启注释
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      max-file-size: 10MB #单个文件大小
+      max-request-size: 10MB #单次总大小
+shiro:
+  enabled: false
+  web:
+    enabled: true
+  loginUrl: /login
+  unauthorizedUrl: /unauthorized
+  successUrl: /index
+  sessionManager:
+    sessionIdCookieEnabled: false
+    sessionIdUrlRewritingEnabled: false
+
+custom:
+  jwt:
+    secret: 7h4alejfloriaj5&asf!a4m   # 密钥。随便写
+    expire: 86400    # token有效时间，30分钟。单位：秒
+    refresh-expire: 2   # 刷新token有效时间，2天。单位：天
+system:
+  properties:
+    whitelist: /favicon.ico,/article/*,/type/getAllType,/error*,/doc*,/webjars/**,/api/flushToken,/upload/image,/subscribe
+    imgSavePath: imgPath
+logging:
+  config: classpath:log4j2.xml
+swagger:
+  switch: true #开启swagger
